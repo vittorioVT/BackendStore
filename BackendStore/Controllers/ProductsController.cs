@@ -27,5 +27,31 @@ namespace BackendStore.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        [HttpPost]
+        public IHttpActionResult PostProducts([FromBody]Product product)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                using (var context = new AppDbContext())
+                {
+                    context.Products.Add(product);
+                    context.SaveChanges();
+
+                    return Ok("{Product was created");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+        }
+
     }
+
+
+
 }
