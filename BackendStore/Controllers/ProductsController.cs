@@ -50,6 +50,45 @@ namespace BackendStore.Controllers
             
         }
 
+        [HttpPut]
+        public IHttpActionResult UpdateProduct(int id, [FromBody]Product product)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (id != product.Id)return BadRequest();
+
+            try
+            {
+                using (var context = new AppDbContext())
+                {
+                    var oldProduct = context.Products.FirstOrDefault(n => n.Id == id);
+                    if (oldProduct == null) return NotFound();
+
+                    oldProduct.Id = product.Id;
+                    oldProduct.Name = product.Name;
+                    oldProduct.Description = product.Description;
+                    oldProduct.IsStore = product.IsStore;
+                    oldProduct.IsStock = product.IsStock;
+                    oldProduct.Count = product.Count;
+                    oldProduct.CountStore = product.CountStore;
+                    oldProduct.CountStock = product.CountStock;
+                    oldProduct.Color = product.Color;
+                    oldProduct.Size = product.Size;
+                    oldProduct.Ordered = product.Ordered;
+                    oldProduct.Comment = product.Comment;
+
+                    context.SaveChanges();
+
+                    return Ok("Entry updated!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
     }
 
 
