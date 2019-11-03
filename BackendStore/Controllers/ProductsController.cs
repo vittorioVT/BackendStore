@@ -87,6 +87,28 @@ namespace BackendStore.Controllers
             }
         }
 
+        [HttpDelete]
+        public IHttpActionResult DeleteProduct(int id)
+        {
+            try
+            {
+                using (var context = new AppDbContext())
+                {
+                    var product = context.Products.FirstOrDefault(n => n.Id == id);
+                    if (product == null) return NotFound();
+
+                    context.Products.Remove(product);
+                    context.SaveChanges();
+
+                    return Ok("Product deleted!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
 
     }
