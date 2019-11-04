@@ -44,10 +44,7 @@ namespace BackendStore.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
-
-
+                     
 
         [HttpPost]
         public IHttpActionResult PostProducts([FromBody]Product product)
