@@ -27,7 +27,22 @@ namespace BackendStore.Controllers
         [HttpPost]
         public IHttpActionResult Register([FromBody]User user)
         {
-            return null;
+            try
+            {
+                using (var context = new AppDbContext())
+                {
+                    var exists = context.Users.Any(n => n.UserName == user.UserName);
+                    if (exists) return BadRequest("User already exists");
+
+                    context.Users.Add(user);
+                    context.SaveChanges();
+                    return Ok(CreateToken(user));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public JwtPackage CreateToken(User user)
