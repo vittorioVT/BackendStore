@@ -13,34 +13,16 @@ using System.Web.Http.Cors;
 
 namespace BackendStore.Controllers
 {
-    [EnableCors(origins:"http://localhost:4200", headers: "*", methods:"*")]
-    [RoutePrefix("auth")]
-    public class AuthenticationController : ApiController
+    [EnableCors("http://localhost:4200", "*", "*")]
+    [RoutePrefix("authfrontend")]
+    public class AuthFrontendController : ApiController
     {
         [Route("login")]
         [HttpPost]
         public IHttpActionResult Login([FromBody] User user)
         {
-            if (string.IsNullOrEmpty(user.UserName) || string.IsNullOrEmpty(user.Password))
-            {
-                return BadRequest("Enter your username and password");
-            }
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    var exists = context.Users.Any(n => n.UserName == user.UserName && n.Password == user.Password);
-                    if (exists) return Ok(CreateToken(user));
-                    return BadRequest("Wrong credentials");
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return null;
         }
-
-
 
         [Route("register")]
         [HttpPost]
@@ -51,7 +33,7 @@ namespace BackendStore.Controllers
                 using (var context = new AppDbContext())
                 {
                     var exists = context.Users.Any(n => n.UserName == user.UserName);
-                    if (exists) return BadRequest("User already exists");
+                    if (exists) return BadRequest("Такий користувач вже існує");
 
                     context.Users.Add(user);
                     context.SaveChanges();
@@ -71,7 +53,7 @@ namespace BackendStore.Controllers
                 new Claim(ClaimTypes.Email, user.UserName)
             });
 
-            const string secretKey = "your secter key goes here";
+            const string secretKey = "your secret key goes here";
             var securityKey = new SymmetricSecurityKey(Encoding.Default.GetBytes(secretKey));
             var signinCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
 
@@ -81,18 +63,15 @@ namespace BackendStore.Controllers
                 );
 
             var tokenString = tokenHandler.WriteToken(token);
-
             return new JwtPackage()
             {
                 UserName = user.UserName,
                 Token = tokenString
             };
         }
+
+
     }
 }
 
-public class JwtPackage
-{
-    public string Token { get; set; }
-    public string UserName { get; set; }
-}
+
