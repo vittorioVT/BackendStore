@@ -9,7 +9,7 @@ using System.Web.Http.Cors;
 
 namespace BackendStore.Controllers
 {
-    [EnableCors("http://localhost:4200","*","*")]
+    [EnableCors("http://localhost:4200", "*","*")] 
     public class ProductsController : ApiController
     {
         public IHttpActionResult GetProducts()
@@ -57,7 +57,7 @@ namespace BackendStore.Controllers
                     context.Products.Add(product);
                     context.SaveChanges();
 
-                    return Ok("{Product was created");
+                    return Ok("Product was created");
                 }
             }
             catch (Exception ex)
